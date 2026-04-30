@@ -36,5 +36,12 @@ def main():
 
     #print(df)
 
+
+
+
+#TODO: get f1, accuracy, precision, recall scores, 
+#charts? 
+#any info from the df that may be importtant
+
 if __name__ == "__main__":
     main()
