@@ -69,7 +69,7 @@ def load_ai_comments (file_path):
 
     #processed = [preprocess_text(c) for c in comments]
 
-    return labels, comments 
+    return comments, labels
 
 
 
