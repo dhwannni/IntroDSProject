@@ -1,4 +1,4 @@
-from util import preprocess_text
+from util import preprocess_text, load_ai_comments, load_human_comments
 import numpy as np
 import pandas as pd
 from imblearn.over_sampling import SMOTE
@@ -25,15 +25,19 @@ def SMOTE(X_train, y_train):
     X_resampled, y_resampled = smote.fit_resample(X_vec, y_train)
     return X_resampled, y_resampled
 
-
-if __name__ == "__main__":
+def main():
     # Load data
-    df = pd.read_csv("data.csv")
-    X = df["text"].values
-    y = df["label"].values
+    ai_comments, ai_labels = load_ai_comments("youtube_ai_comments.csv")
+    human_comments, human_labels = load_human_comments("youtube_comments_1000_english.csv")
+
+    # 2. Combine comments and labels
+    comments = ai_comments + human_comments
+    labels = ai_labels + human_labels
+    # Convert labels to binary
+    y = np.array([1 if label == "ai" else 0 for label in labels])
 
     # Preprocess text data
-    X = np.array([preprocess_text(text) for text in X])
+    X = np.array([preprocess_text(text) for text in comments])
 
     # Split data into training and testing sets
     X_train, X_test, y_train, y_test = split_data(X, y)
@@ -58,3 +62,7 @@ if __name__ == "__main__":
     plt.ylabel("True Positive Rate")
     plt.title("ROC Curve")
     plt.show()
+
+
+if __name__ == "__main__":
+    main()
