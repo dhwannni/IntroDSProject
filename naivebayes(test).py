@@ -29,8 +29,12 @@ def main():
     # 5. Save combined dataset
     df.to_csv("combined_ai_human_comments.csv", index=False)
 
-    print(df.head())
-    print(df["label"].value_counts())
+    print(df.head(100))
+    print(df.tail(100))
+    
+#    print(df["label"].value_counts())
+
+    #print(df)
 
 if __name__ == "__main__":
     main()
