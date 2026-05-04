@@ -1,6 +1,7 @@
 import pandas as pd
 import re
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
+from os import path
 
 
 NON_ALNUM_RE = re.compile(r'[^a-z0-9\s]+') # keeps the spaces 
