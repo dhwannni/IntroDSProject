@@ -7,7 +7,81 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 
 
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, roc_curve
+import matplotlib.pyplot as plt
+
+
+#GRAPH FUNCTIONS 
+
+
+def show_prediction_counts(y_pred):
+    # Count how many predictions were "ai" vs "human"
+    counts = pd.Series(y_pred).value_counts()
+
+    counts.plot(kind="bar")
+    plt.xlabel("Predicted Label")
+    plt.ylabel("Number of Comments")
+    plt.title("Naive Bayes Prediction Counts")
+    plt.xticks(rotation=0)
+    plt.show()
+
+
+def show_actual_counts(y_test):
+    # Count how many actual test labels were "ai" vs "human"
+    counts = y_test.value_counts()
+
+    counts.plot(kind="bar")
+    plt.xlabel("Actual Label")
+    plt.ylabel("Number of Comments")
+    plt.title("Actual Test Label Counts")
+    plt.xticks(rotation=0)
+    plt.show()
+
+
+def show_confusion_matrix_graph(y_test, y_pred):
+    # Labels are ordered so rows/columns are easier to read
+    labels = ["human", "ai"]
+
+    cm = confusion_matrix(y_test, y_pred, labels=labels)
+
+    plt.imshow(cm)
+    plt.title("Naive Bayes Confusion Matrix")
+    plt.xlabel("Predicted Label")
+    plt.ylabel("Actual Label")
+
+    plt.xticks([0, 1], labels)
+    plt.yticks([0, 1], labels)
+
+    # Put the numbers inside each box
+    for i in range(len(labels)):
+        for j in range(len(labels)):
+            plt.text(j, i, cm[i, j], ha="center", va="center")
+
+    plt.colorbar()
+    plt.show()
+
+
+def show_roc_curve(model, X_test_vec, y_test):
+    # Convert labels to binary because roc_curve needs 0/1 labels
+    # ai = 1, human = 0
+    y_test_binary = y_test.map(lambda label: 1 if label == "ai" else 0)
+
+    # Get probability that each comment is AI
+    ai_index = list(model.classes_).index("ai")
+    y_probs = model.predict_proba(X_test_vec)[:, ai_index]
+
+    fpr, tpr, thresholds = roc_curve(y_test_binary, y_probs)
+
+    plt.plot(fpr, tpr, label="Naive Bayes")
+    plt.plot([0, 1], [0, 1], linestyle="--")
+    plt.xlabel("False Positive Rate")
+    plt.ylabel("True Positive Rate")
+    plt.title("Naive Bayes ROC Curve")
+    plt.legend()
+    plt.show()
+
+
+
 
 def main():
    
@@ -87,6 +161,13 @@ def main():
     # Confusion matrix -  detailed breakdown of predictions
     print("\nConfusion Matrix:")
     print(confusion_matrix(y_test, y_pred))
+
+     #9 Graphs
+    show_prediction_counts(y_pred)
+    
+    show_actual_counts(y_test)
+    show_confusion_matrix_graph(y_test, y_pred)
+    show_roc_curve(model, X_test_vec, y_test)
 
 
 
