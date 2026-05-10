@@ -81,6 +81,8 @@ def main():
     ai_comments, ai_labels = load_ai_comments(ai_comments_path)
     human_comments, human_labels = load_human_comments(human_comments_path)
 
+    print(f"Loaded {len(ai_comments)} AI comments and {len(human_comments)} human comments.")
+
     # Combine data
     comments = ai_comments + human_comments
     labels = ai_labels + human_labels
@@ -97,6 +99,8 @@ def main():
 
     # Split data
     X_train, X_test, y_train, y_test = split_data(X_vec, y)
+
+    print(f"Training set: {X_train.shape[0]} samples, Testing set: {X_test.shape[0]} samples")
 
     # Train multiple models with different class balancing techniques
 

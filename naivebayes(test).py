@@ -1,9 +1,11 @@
+from os import path
+
 import pandas as pd
 from util import preprocess_text, load_ai_comments, load_human_comments
 
 
 from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 
 
@@ -85,11 +87,12 @@ def show_roc_curve(model, X_test_vec, y_test):
 
 def main():
    
-    #1 Load AI-generated comments and assign "ai" labels
-    ai_comments, ai_labels = load_ai_comments("youtube_ai_comments.csv")
-    
-    # Load human comments and assign "human" labels
-    human_comments, human_labels = load_human_comments("youtube_comments_1000_english.csv")
+    #1 Load data
+    ai_comments_path = path.join(path.dirname(__file__), "youtube_ai_comments.csv")
+    human_comments_path = path.join(path.dirname(__file__), "youtube_comments_1000_english.csv")
+
+    ai_comments, ai_labels = load_ai_comments(ai_comments_path)
+    human_comments, human_labels = load_human_comments(human_comments_path)
 
    
     #2  Merge both datasets into one list
@@ -129,7 +132,7 @@ def main():
     )
 
   
-    #5 Convert text into numerical features using TF-IDF
+    #5 Convert text into numerical features using CountVectorizer
     vectorizer = CountVectorizer()
 
     # Fit on training data and transform both train/test
